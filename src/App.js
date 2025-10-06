@@ -1,24 +1,35 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Navigation from './components/Navigation/Navigation';
+import Overview from './pages/Overview';
+import Details from './pages/Details';
 import './App.css';
 
 function App() {
+  const [weatherData, setWeatherData] = useState(null);
+
+  useEffect(() => {
+    // In a real app, this would fetch from your backend
+    fetch('http://localhost:5000/api/weather')
+      .then(res => res.json())
+      .then(data => setWeatherData(data))
+      .catch(err => console.error('Error fetching weather data:', err));
+  }, []);
+
+  if (!weatherData) {
+    return <div className="App loading">Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Overview weatherData={weatherData} />} />
+          <Route path="/details" element={<Details weatherData={weatherData} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
