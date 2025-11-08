@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import WeatherCard from '../components/WeatherCard/WeatherCard';
+import { searchWeatherByCity, searchCitiesInMockData } from '../services/weatherService';
 import './Overview.css';
 
 const Overview = ({ weatherData }) => {
@@ -9,7 +10,6 @@ const Overview = ({ weatherData }) => {
   const [remote, setRemote] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiBase = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -30,14 +30,18 @@ const Overview = ({ weatherData }) => {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    fetch(`${apiBase}/api/weather/city?name=${encodeURIComponent(debouncedRaw)}`)
-      .then(async r => {
-        const data = await r.json();
-        if (!r.ok) {
-          throw new Error(data.message || 'Failed to fetch weather data');
-        }
-        return data;
-      })
+    
+    // First try to search in mock data
+    const mockResults = searchCitiesInMockData(debouncedRaw);
+    if (mockResults.cities.length > 0) {
+      setRemote(mockResults);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
+    // If not found in mock data, search via API
+    searchWeatherByCity(debouncedRaw)
       .then(data => {
         if (!cancelled) {
           setRemote(data);
@@ -53,7 +57,7 @@ const Overview = ({ weatherData }) => {
         }
       });
     return () => { cancelled = true; };
-  }, [debouncedRaw, apiBase]);
+  }, [debouncedRaw]);
 
   const filtered = useMemo(() => {
     if (remote && Array.isArray(remote.cities)) return remote.cities;
