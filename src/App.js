@@ -1,18 +1,44 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Navigation from './components/Navigation/Navigation';
-import Overview from './pages/Overview';
-import Details from './pages/Details';
 import './App.css';
+const Overview = lazy(() => import('./pages/Overview'));
+const Details = lazy(() => import('./pages/Details'));
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved === 'light' || saved === 'dark' ? saved : 'dark';
+  });
 
   useEffect(() => {
-    // In a real app, this would fetch from your backend
-    fetch('http://localhost:5000/api/weather')
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const CACHE_KEY = 'weather_cache_v1';
+    const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+    const apiBase = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.timestamp < CACHE_TTL_MS && parsed.data) {
+          setWeatherData(parsed.data);
+        }
+      } catch {}
+    }
+
+    fetch(`${apiBase}/api/weather`)
       .then(res => res.json())
-      .then(data => setWeatherData(data))
+      .then(data => {
+        setWeatherData(data);
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
+        } catch {}
+      })
       .catch(err => console.error('Error fetching weather data:', err));
   }, []);
 
@@ -23,11 +49,13 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Overview weatherData={weatherData} />} />
-          <Route path="/details" element={<Details weatherData={weatherData} />} />
-        </Routes>
+        <Navigation theme={theme} onToggleTheme={() => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))} />
+        <Suspense fallback={<div className="App loading">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Overview weatherData={weatherData} />} />
+            <Route path="/details" element={<Details weatherData={weatherData} />} />
+          </Routes>
+        </Suspense>
       </div>
     </Router>
   );

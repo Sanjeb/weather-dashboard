@@ -1,7 +1,7 @@
 .App {
   min-height: 100vh;
-  color: white;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: var(--color-text);
+  background: var(--gradient-bg);
 }
 
 .App.loading {

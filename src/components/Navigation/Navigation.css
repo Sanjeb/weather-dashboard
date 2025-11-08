@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-surface);
   backdrop-filter: blur(10px);
   position: fixed;
   top: 0;
@@ -26,7 +26,7 @@
 }
 
 .nav-links a {
-  color: white;
+  color: var(--color-text);
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -35,10 +35,29 @@
 }
 
 .nav-links a:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-hover);
 }
 
 .nav-links a.active {
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-hover);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle {
+  appearance: none;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--color-surface-hover);
+}
+
+.theme-toggle:active {
+  transform: scale(0.98);
 }
