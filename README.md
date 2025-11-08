@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# Weather Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern weather dashboard application built with React and Express.js that displays weather information for cities in India.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- Node.js (v14 or higher)
+- npm (v6 or higher)
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. **Clone the repository** (if not already done):
+   ```bash
+   git clone <repository-url>
+   cd weather-dashboard
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-### `npm test`
+3. **Configure environment variables** (optional):
+   
+   Create a `.env` file in the root directory if you want to customize the configuration:
+   ```env
+   PORT=5000
+   ALLOWED_ORIGINS=http://localhost:3000
+   REACT_APP_API_URL=http://localhost:5000
+   ```
+   
+   Note: The application will work with default values if no `.env` file is provided.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Running the Project
 
-### `npm run build`
+The project consists of two parts: a backend server and a frontend React application.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Option 1: Run Both Services (Recommended)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Terminal 1 - Start the backend server:**
+```bash
+node backend/server.js
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The backend server will start on `http://localhost:5000` (or the port specified in your `.env` file).
 
-### `npm run eject`
+**Terminal 2 - Start the frontend application:**
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The React app will start on `http://localhost:3000` and automatically open in your browser.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Option 2: Run Backend in Background
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Start the backend server in the background:**
+```bash
+node backend/server.js &
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Start the frontend:**
+```bash
+npm start
+```
 
-## Learn More
+## Accessing the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Once both servers are running, open your browser and navigate to:
+```
+http://localhost:3000
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Building for Production
 
-### Code Splitting
+To create a production build of the frontend:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm run build
+```
 
-### Analyzing the Bundle Size
+This will create an optimized build in the `build/` directory.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Project Structure
 
-### Making a Progressive Web App
+```
+weather-dashboard/
+├── backend/
+│   └── server.js          # Express backend server
+├── public/                # Static assets
+├── src/                   # React application source
+│   ├── components/       # Reusable React components
+│   ├── pages/            # Page components
+│   └── data/             # Data utilities
+├── package.json          # Dependencies and scripts
+└── README.md            # This file
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Features
 
-### Advanced Configuration
+- Real-time weather data for Indian cities
+- Hourly and daily weather forecasts
+- Modern, responsive UI with dark/light theme support
+- Weather data caching for improved performance
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Troubleshooting
 
-### Deployment
+- **Port already in use**: If port 5000 or 3000 is already in use, either stop the conflicting service or change the port in your `.env` file.
+- **CORS errors**: Make sure the `ALLOWED_ORIGINS` in your backend `.env` matches your frontend URL.
+- **API errors**: Ensure you have an active internet connection as the backend fetches weather data from external APIs.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
